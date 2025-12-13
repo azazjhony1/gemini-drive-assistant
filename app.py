@@ -350,7 +350,6 @@ with st.sidebar:
     # Settings
     st.subheader("🔧 Settings")
     st.text(f"Model: {config.GEMINI_MODEL}")
-    st.text(f"Folder ID: {config.DRIVE_FOLDER_ID[:20]}...")
     
     # Clear chat button
     if st.button("🗑️ Clear Chat History", use_container_width=True):
