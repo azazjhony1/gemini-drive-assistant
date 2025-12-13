@@ -182,8 +182,19 @@ def load_documents():
     """Load documents from Drive folder"""
     try:
         with st.spinner("📂 Fetching document list from Drive..."):
-            # Get file list
-            files = st.session_state.drive_connector.list_files(config.DRIVE_FOLDER_ID)
+            # Get file list from all configured folders
+            all_files = []
+            
+            for folder_id in config.DRIVE_FOLDER_IDS_LIST:
+                files = st.session_state.drive_connector.list_files(folder_id)
+                # Add folder info to each file
+                for file in files:
+                    file['folder_id'] = folder_id
+                all_files.append(files)
+            
+            # Flatten the list
+            st.session_state.document_list = [f for sublist in all_files for f in sublist]
+            
             st.session_state.document_list = files
             
             # Select all documents by default
