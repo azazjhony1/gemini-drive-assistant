@@ -52,6 +52,6 @@ else:
     DRIVE_FOLDER_IDS_LIST = []
 
 # Gemini Model Configuration
-GEMINI_MODEL = "gemini-1.5-flash-latest"
+GEMINI_MODEL = "gemini-flash-latest"
 
 print(f"📁 {len(DRIVE_FOLDER_IDS_LIST)} folder(s) configured")
