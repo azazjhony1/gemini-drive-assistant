@@ -1,26 +1,5 @@
-# import os
-# from dotenv import load_dotenv
-
-# load_dotenv()
-
-# GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
-# GOOGLE_APPLICATION_CREDENTIALS = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-# DRIVE_FOLDER_ID = os.getenv('DRIVE_FOLDER_ID')
-
-
-# GEMINI_MODEL = "gemini-flash-latest"  
-
-# if not GEMINI_API_KEY:
-#     raise ValueError("GEMINI_API_KEY not found in .env file")
-# if not GOOGLE_APPLICATION_CREDENTIALS:
-#     raise ValueError("GOOGLE_APPLICATION_CREDENTIALS not found in .env file")
-# if not DRIVE_FOLDER_ID:
-#     raise ValueError("DRIVE_FOLDER_ID not found in .env file")
-
-# print("✅ Configuration loaded successfully!")
-
-
 import os
+import json
 
 # Detect if we're running on Streamlit Cloud
 IS_STREAMLIT_CLOUD = os.path.exists('/mount/src')
@@ -36,12 +15,20 @@ if IS_STREAMLIT_CLOUD:
     # Service account from secrets
     GOOGLE_APPLICATION_CREDENTIALS = "service-account.json"
     
-    # Write service account JSON to file from secrets
-    import json
+    # Get service account data from secrets
+    sa_data = dict(st.secrets["gcp_service_account"])
+    
+    # The private_key might have escaped \n that need to be actual newlines
+    if "private_key" in sa_data:
+        # Replace escaped newlines with actual newlines
+        sa_data["private_key"] = sa_data["private_key"].replace("\\n", "\n")
+    
+    # Write service account JSON to file
     with open(GOOGLE_APPLICATION_CREDENTIALS, 'w') as f:
-        json.dump(dict(st.secrets["gcp_service_account"]), f)
+        json.dump(sa_data, f, indent=2)
     
     print("✅ Loaded secrets from Streamlit Cloud")
+    print(f"✅ Service account written to {GOOGLE_APPLICATION_CREDENTIALS}")
     
 else:
     # Running locally - use .env
